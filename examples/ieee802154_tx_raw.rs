@@ -67,20 +67,14 @@ fn main() {
     writeln!(Console::writer(), "Radio is on!\n").unwrap();
 
     let mut counter = 0_usize;
-    let mut buf = [
-        b'f', b'r', b'a', b'm', b'e', b' ', b'n', b'.', b'o', b'.', b' ', b'\0', b'\0', b'\0',
-        b'\0',
-    ];
-    fn set_buf_cnt(buf: &mut [u8], counter: &mut usize) {
-        let buf_len = buf.len();
-        let buf_cnt = &mut buf[buf_len - core::mem::size_of_val(&counter)..];
-        buf_cnt.copy_from_slice(&counter.to_be_bytes());
+    let mut buf = [0u8; 60];
+
+    for i in 0..buf.len() {
+        buf[i] = i as u8;
     }
 
     loop {
-        Alarm::sleep_for(Milliseconds(1000)).unwrap();
-
-        set_buf_cnt(&mut buf, &mut counter);
+        Alarm::sleep_for(Milliseconds(250)).unwrap();
 
         // Transmit a frame
         Ieee802154::transmit_frame_raw(&buf).unwrap();

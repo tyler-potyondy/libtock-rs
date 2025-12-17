@@ -69,14 +69,14 @@ fn main() {
     loop {
         let frame = operator.receive_frame().unwrap();
 
-        let body_len = frame.payload_len;
+        let body_len = frame.payload_len as usize;
+
         writeln!(
             Console::writer(),
-            "Received frame with body of len {}: {} {:?}!\n",
+            "Received frame of length {} - byte array: {:?}\n",
             body_len,
-            core::str::from_utf8(&frame.body).unwrap(),
-            &frame.body[..frame.body.len() - core::mem::size_of::<usize>()]
+            &frame.body[..body_len]
         )
-        .unwrap();
+        .unwrap()
     }
 }
